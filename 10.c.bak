@@ -1,0 +1,90 @@
+#include <stdio.h>
+#define bool int
+#define true 1
+#define false 0
+
+bool isMatch(char* s, char* p) {
+    int slen = 0;
+    char* origins = s;
+    if (!s) {
+        return false;
+    }
+    if (!p) {
+        return false;
+    }
+    if (*p == '*') {
+        return false;
+    }
+    while (s[slen] != 0) {
+        slen++;
+    }
+    while (*s) {
+        int match = 0;
+        char preceding = 0;
+        char sc;
+        char pc;
+        sc = *s;
+        s++;
+        while (*p) {
+            match = 0;
+            pc = *p;
+            p++;
+            if(*p == '*') {
+                preceding = pc;
+                while (*p == '*') {
+                    p++;
+                }
+                if (preceding != '.') {
+                    // $* case
+                    if (sc != preceding) {
+                        continue;
+                    }
+                    while (*s == preceding) {
+                        s++;
+                    }
+                    match = 1;
+                    break;
+                }
+                // .* case
+                while (p[0] == '.' && p[1] == '*') {
+                    // .*.* case
+                    p += 2; 
+                    while (*p == '*') {
+                        p++;
+                    }
+                }
+                if (*p == 0) {
+                    // .* is the end
+                    return true;
+                }
+                // try sub matches
+                s--;
+                while (*s) {
+                    if (isMatch(s, p)) {
+                        return true;
+                    }
+                    s++;
+                }
+                return false;
+            }
+            if (pc == '.') {
+                match = 1;
+            }
+            if (pc == sc) {
+                match = 1;
+            }
+            break;
+        }
+        if (!match) {
+            return false;
+        }
+    }
+    return *p == 0;
+}
+
+int main(int argc, char** argv)
+{
+    printf("%s\t\t\t%s\t\t\t%d\n", argv[1], argv[2], isMatch(argv[1], argv[2]));
+
+    return 0;
+}
