@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#define MAX 30
+#define MAX 10000
 
 static int round = 0;
 
@@ -10,10 +10,9 @@ void print(int * arr, int size)
 {
     int i = 0;
     while (i < size) {
-        printf("%d ", arr[i]);
+        printf("%.8d\n", arr[i]);
         i++;
     }
-    printf("\n");
 }
 
 void myqsort(int * arr, int size, int level)
@@ -56,7 +55,6 @@ void myqsort(int * arr, int size, int level)
         printf("============\t======== ");
         print(arr,size);
     }
-    printf("level=%d, pivot=%d, i=%d, j=%d\n", level, pivot, i, j);
     if (pivot == arr[i]) {
         if (i == 0) {
             i++;
@@ -82,22 +80,124 @@ void fill(int ** parr, int size)
 
 void fill2(int ** parr, int * size)
 {
-    *parr = {286, 293, 286, 290};
+    static int arr[] = {286, 293, 285, 290};
+    *parr = arr;
     *size = 4;
+}
+
+void insertsort(int* arr, int size)
+{
+    int i;
+    int j;
+    int v;
+    for (i = 1; i < size; i++) {
+        v = arr[i];
+        for (j = i-1; j >= 0; j--) {
+            if (v >= arr[j]) {
+                arr[j+1] = v;
+                break;
+            } else {
+                arr[j+1] = arr[j];
+                arr[j] = v;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void insertsort2(int *arr, int size)
+{
+    int i;
+    int j;
+    for (i = 1; i < size; i++) {
+        int tmp = arr[i];
+        for(j = i-1; (j >= 0) && arr[j] > tmp; j--) {
+            arr[j+1] = arr[j];
+        }
+        arr[j+1] =tmp;
+    }
+}
+
+void shellsort(int *arr, int size)
+{
+    int step;
+    int i;
+    int j;
+    for (step = size/2; step > 0; step /= 2)
+    {
+        for (i = step; i < size; i++) {
+            int tmp = arr[i];
+            for (j = i - step; (j >=0) && (arr[j] > tmp); j -= step) {
+                arr[j+step] = arr[j];
+            }
+        //    arr[j+step] = tmp;
+        }
+    }
 }
 
 int main(int argc, char** argv)
 {
     int *arr;
-    int size = rand() % MAX;
+    int size;
     if (argc > 1) {
         int seed;
         seed = atoi(argv[1]);
         srand(seed);
     }
-    //fill(&arr, size);
-    fill2(&arr, &size);
-    myqsort(arr, size, 0);
+    size = rand() % MAX;
+    fill(&arr, size);
+    //fill2(&arr, &size);
+
+    //myqsort(arr, size, 0);
+    //insertsort(arr, size);
+    //insertsort2(arr, size);
+    shellsort(arr, size);
+
     print(arr,size);
     return 0;
 }
