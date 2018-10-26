@@ -7,15 +7,15 @@ using namespace std;
 class Solution {
     public:
         int evalRPN(vector<string>& tokens) {
-            stack<string> works;
+            stack<int> works;
             for (int i  = 0; i < tokens.size(); ++i) {
                 const string& s = tokens[i];
                 if (s.length() == 1) {
                     int a;
                     int b;
                     switch (s.c_str()[0]) {
-#define GETVALUES b = stoi(works.top()); works.pop(); a = stoi(works.top()); works.pop();
-#define SETVALUE(x) works.push(to_string(x));
+#define GETVALUES b = works.top(); works.pop(); a = works.top(); works.pop();
+#define SETVALUE(x) works.push(x);
                         case '+':
                             GETVALUES;
                             SETVALUE(a+b);
@@ -33,15 +33,14 @@ class Solution {
                             SETVALUE(a/b);
                             break;
                         default:
-                            works.push(s);
+                            SETVALUE(stoi(s));
                             break;
                     }
                 } else {
-                    works.push(s);
+                    SETVALUE(stoi(s));
                 }
             }
-            const string& sr = works.top();
-            return stoi(sr);
+            return works.top();
         }
 };
 
